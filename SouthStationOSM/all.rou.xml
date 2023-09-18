@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2021-11-27 20:48:32 by Eclipse SUMO netedit Version 1.10.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <sumo-net-file value="/Users/work/Documents/1200/Final/SUMO/SouthStationOSM/SouthStationOSM.net.xml"/>
+    </input>
+
+    <output>
+        <output-file value="/Users/work/Documents/1200/Final/SUMO/SouthStationOSM/SouthStationOSM.net.xml"/>
+        <output.street-names value="true"/>
+    </output>
+
+    <processing>
+        <geometry.min-radius.fix.railways value="false"/>
+        <geometry.max-grade.fix value="false"/>
+        <offset.disable-normalization value="true"/>
+        <lefthand value="false"/>
+    </processing>
+
+    <junctions>
+        <no-turnarounds value="true"/>
+        <junctions.corner-detail value="5"/>
+        <junctions.limit-turn-speed value="5.5"/>
+        <rectangular-lane-cut value="false"/>
+    </junctions>
+
+    <pedestrian>
+        <walkingareas value="false"/>
+    </pedestrian>
+
+    <netedit>
+        <route-files value="/Users/work/Documents/1200/Final/SUMO/SouthStationOSM/all.rou.xml"/>
+    </netedit>
+
+    <report>
+        <aggregate-warnings value="5"/>
+    </report>
+
+</configuration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="WorcesterLine" vClass="motorcycle" guiShape="rail" color="magenta"/>
+    <route edges="A6_in 321807295#2 749953339 321773613#0 321773613#1 749953344 L9_in L9_out -749953344 88956079#0 85317999#1 85317999#2 321807299 321773613#0 321773613#1 749953344 L9_in" color="yellow" id="A6toL9"/>
+</routes>

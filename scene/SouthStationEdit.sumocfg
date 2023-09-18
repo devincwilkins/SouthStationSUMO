@@ -1,0 +1,10 @@
+<configuration>
+    <input>
+        <waiting-time-memory value= "0"/>
+        <net-file value="SouthStationEdit.net.xml"/>
+        <route-files value="routefile.rou.xml"/>
+        <gui-settings-file value="SouthStationEdit.settings.xml"/>
+        <additional-files value="SouthStationEdit.add.xml"/>
+        <time-to-teleport value = "-1"/>
+    </input>
+</configuration>

@@ -1,0 +1,14 @@
+<viewsettings>
+    <delay value ="20"/>
+    <viewport zoom="300" x="1500" y="2400" angle="-65"/>
+    <scheme name="real world">
+        <edges laneEdgeMode="0" scaleMode="0" laneShowBorders="1" showBikeMarkings="1" showLinkDecals="1" 
+        showLinkRules="1" showRails="1" hideConnectors="1" widthExaggeration="1.00" minSize="0.00" 
+        showDirection="0" showSublanes="0" spreadSuperposed="0" edgeParam="EDGE_KEY" laneParam="LANE_KEY" 
+        vehicleParam="PARAM_NUMERICAL" vehicleTextParam="name" edgeData="speed" edgeValueHideCheck="0" 
+        edgeValueHideThreshold="0.00"/>
+        <vehicles vehicleName_show="0" vehicleName_size="50.00" vehicleName_color="white" vehicleName_bgColor="black" 
+        vehicleText_show="1" vehicleText_size="50.00" vehicleText_color="white" 
+        vehicleText_bgColor="black" vehicleText_constantSize="1"/>
+    </scheme>
+</viewsettings>

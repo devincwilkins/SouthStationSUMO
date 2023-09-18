@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2022-07-29 15:19:58 by Eclipse SUMO netedit Version 1.10.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <sumo-net-file value="/Users/work/Documents/GitHub/RL-dispatch/scene/SouthStationEdit.net.xml"/>
+    </input>
+
+    <output>
+        <output-file value="/Users/work/Documents/GitHub/RL-dispatch/scene/SouthStationEdit.net.xml"/>
+        <output.street-names value="true"/>
+    </output>
+
+    <processing>
+        <geometry.min-radius.fix.railways value="false"/>
+        <geometry.max-grade.fix value="false"/>
+        <offset.disable-normalization value="true"/>
+        <lefthand value="false"/>
+    </processing>
+
+    <junctions>
+        <no-turnarounds value="true"/>
+        <junctions.corner-detail value="5"/>
+        <junctions.limit-turn-speed value="268"/>
+        <rectangular-lane-cut value="false"/>
+    </junctions>
+
+    <pedestrian>
+        <walkingareas value="false"/>
+    </pedestrian>
+
+    <netedit>
+        <additional-files value="/Users/work/Documents/GitHub/RL-dispatch/scene/SouthStationEdit.add.xml"/>
+    </netedit>
+
+    <report>
+        <aggregate-warnings value="5"/>
+    </report>
+
+</configuration>
+-->
+
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <e2Detector id="Ind1" lane="Start2toAB2_0" pos="237.22" length="5.00" freq="300.00" file="e2Detector_AB2toStart2_0_0.xml" friendlyPos="1"/>
+    <e2Detector id="Ind2" lane="Start4toW2_0" pos="334.99" length="5.00" freq="300.00" file="Ind2.xml" friendlyPos="1"/>
+    <e2Detector id="Ind3" lane="Start7toEnt4_0" pos="147.44" length="5.00" freq="300.00" file="e2Detector_Ent4toStart7_0_15.xml"/>
+    <e2Detector id="Ind4" lane="Start9toEnt5_0" pos="148.82" length="5.00" freq="300.00" file="e2Detector_Ent5toStart9_0_16.xml"/>
+    <e2Detector id="Rel1" lane="L1_out_0" pos="215.80" length="10.00" freq="300.00" file="e2Detector_L1_in_0_2.xml" friendlyPos="1"/>
+    <e2Detector id="Rel10" lane="L10_out_0" pos="356.91" length="10.00" freq="300.00" file="e2Detector_L10_out_0_10.xml"/>
+    <e2Detector id="Rel11" lane="L11_out_0" pos="243.02" length="10.00" freq="300.00" file="e2Detector_L11_in_0_8.xml" friendlyPos="1"/>
+    <e2Detector id="Rel12" lane="L12_out_0" pos="208.85" length="10.00" freq="300.00" file="e2Detector_L12_in_0_6.xml" friendlyPos="1"/>
+    <e2Detector id="Rel13" lane="L13_out_0" pos="171.90" length="10.00" freq="300.00" file="e2Detector_L13_in_0_7.xml" friendlyPos="1"/>
+    <e2Detector id="Rel2" lane="L2_out_0" pos="216.72" length="10.00" freq="300.00" file="e2Detector_L2_in_0_3.xml" friendlyPos="1"/>
+    <e2Detector id="Rel3" lane="L3_out_0" pos="252.04" length="10.00" freq="300.00" file="e2Detector_L3_in_0_4.xml" friendlyPos="1"/>
+    <e2Detector id="Rel4" lane="L4_out_0" pos="252.45" length="10.00" freq="300.00" file="e2Detector_L4_in_0_5.xml" friendlyPos="1"/>
+    <e2Detector id="Rel5" lane="L5_out_0" pos="303.82" length="10.00" freq="300.00" file="e2Detector_L5_in_0_14.xml" friendlyPos="1"/>
+    <e2Detector id="Rel6" lane="L6_out_0" pos="304.57" length="10.00" freq="300.00" file="e2Detector_L6_in_0_13.xml" friendlyPos="1"/>
+    <e2Detector id="Rel7" lane="L7_out_0" pos="344.77" length="10.00" freq="300.00" file="e2Detector_L7_in_0_11.xml" friendlyPos="1"/>
+    <e2Detector id="Rel8" lane="L8_out_0" pos="345.25" length="10.00" freq="300.00" file="e2Detector_L8_in_0_12.xml" friendlyPos="1"/>
+    <e2Detector id="Rel9" lane="L9_out_0" pos="357.08" length="10.00" freq="300.00" file="e2Detector_L9_in_0_9.xml" friendlyPos="1"/>
+</additional>
