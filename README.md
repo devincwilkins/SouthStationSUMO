@@ -1,6 +1,7 @@
 # South Station SUMO Simulation
 
 ## Inputting Schedules (/schedules/*)
+Design your own arrivals and departures schedule and input into the schedules folder
 
 ## Adjusting Settings (/settings/settings.ini)
 gui = (True/False) | Whether you want SUMO to visualize the simulation, runs faster if False
@@ -10,6 +11,7 @@ loading_duration = (Integer value) | Minimum time trains spend at platform for l
 timestep = (Integer value) | How much time to elapse in the simulation at each step in seconds, reccommended value is 10
 
 sumocfg_file_name = (.cfg filename) | Which simulation architecture to use from scene folder
+
 schedule_file_name = (.csv filename) | Which schedule file to use from schedules folder
 
 ## Route and Vehicle Information (generator.py)
