@@ -3,8 +3,7 @@ from __future__ import print_function
 
 from simulation import Simulation
 from generator import TrafficGenerator
-from utils import import_test_configuration, set_sumo, set_test_path
-import pandas as pd
+from utils import import_test_configuration, set_sumo
 
 if __name__ == "__main__":
     config = import_test_configuration(config_file='settings/settings.ini')
@@ -22,7 +21,7 @@ if __name__ == "__main__":
         config['start_time'], 
         config['end_time'], 
         config['loading_duration'],
-        config['timestep']
+        config['timestep'],
         config['schedule_file_name']
     )
 

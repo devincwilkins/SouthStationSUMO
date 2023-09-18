@@ -1,21 +1,19 @@
 import numpy as np
+import csv
+import pandas as pd
+from utils import import_test_configuration, set_sumo
+
+config = import_test_configuration(config_file='settings/settings.ini')
+schedule_path = 'schedules/'+config['schedule_file_name']
+
 
 class TrafficGenerator:
     def __init__(self, start_time, end_time):
-        self._max_steps = end_time - start_time
         self.start_time = start_time
         self.end_time = end_time
 
-    def generate_routefile(self,seed):
-        """
-        Generation of the route of every train for one episode
-        """
-        np.random.seed(seed)  # make tests reproducible
-        # demand per second from different directions
-        pA1 = 1. / 600
-        with open("scene/routefile.rou.xml", "w") as routes: #, open("gennedsched.csv","w") as outs:
-            # writing = csv.writer(outs, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            # outs.truncate()
+    def generate_routefile(self, seed):
+        with open("scene/routefile.rou.xml", "w") as routes:
             print("""<routes>
             <vType id="CR" vClass="rail" accel="0.8" decel="0.8" sigma="0.5" length="80" minGap="8" maxSpeed="4.5" guiShape="rail" carFollowModel="Rail" trainType="ICE1" >
                 <param key="carriageLength" value="20"/>
@@ -23,7 +21,14 @@ class TrafficGenerator:
                 <param key="locomotiveLength" value="6"/> 
             </vType>
             <route edges="Start2toAB2 AB2toAC ACtoU UtoS StoR RtoQ QtoS1 L1_in DummyLink1" color="yellow" id="Track5toL1"/>
+            <route edges="Start2toAB2 AB2toAC ACtoU UtoS StoR RtoQ QtoS2 L2_in DummyLink2" color="yellow" id="Track5toL2"/>
+            <route edges="Start2toAB2 AB2toAC ACtoU UtoS StoR RtoN NtoO OtoP PtoS3 L3_in DummyLink3" color="yellow" id="Track5toL3"/>
             <route edges="Start2toAB2 AB2toAC ACtoU UtoS StoR RtoN NtoO OtoP PtoS4 L4_in DummyLink4" color="yellow" id="Track5toL4"/>
+            <route edges="Start2toAB2 AB2toAC ACtoU UtoS StoL LtoM MtoS5 L5_in DummyLink5" color="yellow" id="Track5toL5"/>
+            <route edges="Start2toAB2 AB2toAC ACtoU UtoS StoL LtoM MtoS6 L6_in DummyLink6" color="yellow" id="Track5toL6"/>
+            <route edges="Start2toAB2 AB2toAB ABtoAD ADtoX XtoK KtoZ2 Z2toZ3 Z3toS7 L7_in DummyLink7" color="yellow" id="Track5toL7"/>
+            <route edges="Start2toAB2 AB2toAB ABtoAD ADtoX XtoK KtoZ2 Z2toZ3 Z3toS8 L8_in DummyLink8" color="yellow" id="Track5toL8"/>
+            <route edges="Start2toAB2 AB2toAB ABtoAD ADtoX XtoK KtoZ2 Z2toZ ZtoZ4 Z4toS9 L9_in DummyLink9" color="yellow" id="Track5toL9"/>
             <route edges="Start2toAB2 AB2toAB ABtoAD ADtoX XtoK KtoZ2 Z2toZ ZtoZ4 Z4toY YtoS10 L10_in DummyLink10" color="yellow" id="Track5toL10"/>
 
             <route edges="Start4toW2 W2toX XtoK KtoL LtoN NtoO OtoQ QtoS1 L1_in DummyLink1" color="yellow" id="Track1toL1"/>
@@ -153,37 +158,74 @@ class TrafficGenerator:
             <route edges="L13_in L13_out S13toJ JtoH HtoG GtoF FtoD DtoStart8" color="yellow" id="L13toTrackOC19"/>""", file=routes)
 
             vehNr = 0
-            for i in range(self.start_time, self.end_time - 1200):
-                if np.random.uniform(0, 1) < pA1:
-                    print(
-                        '''
-                            <vehicle id="CR-Worcester_%i" type="CR" route="Track5toL1" depart="%i" departSpeed="4.4"> 
-                            <param key="assigned" value="False"/> 
-                            <param key="dispatched" value="False"/> 
-                            <param key="dep_time" value="0"/> 
-                            <param key="greenlit" value="False"/> <param key="loading" value="False"/> 
-                            <param key="doneloading" value="False"/>
-                            <stop lane="L1_in_0" endPos="185" duration="200"/> 
-                            </vehicle>
-                        '''
-                        % (
-                        vehNr, i,),  file=routes)
-                    # writing.writerow(["%i" % (vehNr),"%i" % (i)])
-                    vehNr += 1
-                if np.random.uniform(0, 1) < pA1:
-                    print(
-                        '''
-                            <vehicle id="CR-Kingston_%i" type="CR" route="TrackOC21toL1" depart="%i" departSpeed="4.4"> 
-                            <param key="assigned" value="False"/> 
-                            <param key="dispatched" value="False"/> 
-                            <param key="dep_time" value="0"/> 
-                            <param key="greenlit" value="False"/> <param key="loading" value="False"/> 
-                            <param key="doneloading" value="False"/>
-                            <stop lane="L1_in_0" endPos="185" duration="200"/> 
-                            </vehicle>
-                        '''
-                        % (
-                        vehNr, i,),  file=routes)
-                    # writing.writerow(["%i" % (vehNr),"%i" % (i)])
-                    vehNr += 1
+
+            defaultDict = {'CR-Fairmount':'TrackDB2toL1','CR-Providence':'Track1toL1','CR-Franklin':'Track1toL1', \
+                'CR-Middleborough':'TrackOC21toL1','CR-Worcester':'Track5toL1','CR-Needham':'Track5toL1', \
+                    'CR-Greenbush':'TrackOC21toL1','CR-Kingston':'TrackOC21toL1','Amtrak':'Track1toL1','Southcoast':'TrackOC21toL1'} 
+
+            defaultYardDict = {'CR-Fairmount':'TrackOC21toL1','CR-Providence':'TrackOC21toL1','CR-Franklin':'TrackOC21toL1', \
+                'CR-Middleborough':'TrackOC21toL1','CR-Worcester':'TrackOC21toL1','CR-Needham':'TrackOC21toL1', \
+                    'CR-Greenbush':'TrackOC21toL1','CR-Kingston':'TrackOC21toL1','Amtrak':'TrackOC21toL1','Southcoast':'TrackOC21toL1'} 
+            
+            colorDict = {'CR-Fairmount':'yellow','CR-Providence':'yellow','CR-Franklin':'yellow', \
+                'CR-Middleborough':'yellow','CR-Worcester':'yellow','CR-Needham':'yellow', \
+                    'CR-Greenbush':'yellow','CR-Kingston':'yellow','Amtrak':'blue','Southcoast':'#51FF06'} 
+
+            df = pd.read_csv(schedule_path)
+
+            arrivals = df[df['Direction'] == 1]
+            departures = df[df['Direction'] == 0]
+            arrivals['low'] = arrivals['Minutes'] + 15
+            arrivals['hi'] = arrivals['Minutes'] + 15
+
+            tmp = arrivals.merge(departures, how='left', on=['Service'], suffixes=('', '_OB')) \
+            .query('Minutes_OB.between(`low`, `hi`)')
+            
+            paired = (
+            tmp.assign(
+                Minutes_diff = tmp['Minutes_OB'] - tmp['Minutes']
+            )
+            .sort_values(['Minutes_diff'])
+            )
+
+            paired = paired.reset_index()  # make sure indexes pair with number of rows
+
+            unique_ib_list = []
+            unique_ob_list = []
+            count = 0
+
+            for index, row in paired.iterrows():
+                if row['id'] not in unique_ib_list and row['id_OB'] not in unique_ob_list:
+                    count +=1
+                    unique_ib_list.append(row['id'])
+                    unique_ob_list.append(row['id_OB'])
+                else:
+                    paired.drop(index, inplace=True)
+
+            match_dict = dict(zip(paired.id, paired.id_OB))
+            time_dict = dict(zip(paired.id_OB, paired.Minutes_OB))
+
+            with open(schedule_path, newline='') as csvfile:
+                reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+                next(reader)
+                sortedlist = sorted(reader, key=lambda row: int(row[3])*60, reverse=False)
+                for row in sortedlist:
+                    if row[2] == '1':
+                        if row[0] in match_dict.keys():
+                            print('    <vehicle id="%s_%s" type="CR" route="%s" color="%s" depart="%i" departSpeed="4.4"> <param key="assigned" value="False"/> <param key="next" value="%s"/> <param key="dispatched" value="False"/> <param key="dep_time" value="%i"/>  <param key="greenlit" value="False"/> <param key="loading" value="False"/> <param key="doneloading" value="False"/> <param key="name" value="%s_%s"/> <stop lane="L1_in_0" endPos="185" duration="200"/> </vehicle>' % (row[1], row[0], defaultDict[row[1]], colorDict[row[1]], int(row[3])*60, match_dict[row[0]], time_dict[match_dict[row[0]]]*60, row[1], row[0]),  file=routes)
+                        else:
+                            print('    <vehicle id="%s_%s" type="CR" route="%s" color="%s" depart="%i" departSpeed="4.4"> <param key="assigned" value="False"/> <param key="next" value="YARD"/> <param key="dispatched" value="False"/> <param key="dep_time" value="0"/>  <param key="greenlit" value="False"/> <param key="loading" value="False"/> <param key="doneloading" value="False"/> <param key="name" value="%s_%s"/> <stop lane="L1_in_0" endPos="185" duration="200"/> </vehicle>' % (row[1], row[0], defaultDict[row[1]], colorDict[row[1]], int(row[3])*60, row[1], row[0]),  file=routes)
+                    else:
+                        if row[0] not in match_dict.values():
+                            print('    <vehicle id="%s_%s" type="CR" route="%s" color="#8FDBFF" depart="%i" departSpeed="4.4"> <param key="assigned" value="False"/><param key="dispatched" value="False"/> <param key="origin" value="YARD"/> <param key="dep_time" value="0"/><param key="greenlit" value="False"/> <param key="loading" value="False"/> <param key="doneloading" value="False"/> <param key="name" value="%s_%s"/> <stop lane="L1_in_0" endPos="185" duration="200"/> </vehicle>' % (row[1], row[0], defaultYardDict[row[1]], int(row[3])*60, row[1], row[0]),  file=routes)
             print("</routes>", file=routes)
+
+            # def yard_departures():
+            #     if departure scheduled before any arrivals:
+            #         insert departure train from yard
+            #     for arrival in set of arrivals:
+            #         if there is a scheduled departure greater than 10 minutes less than 20 minutes, assign that departure to that arrival
+            #         else, train should go to yard
+            #     for all unassigned departures,
+            #         come from yard
+

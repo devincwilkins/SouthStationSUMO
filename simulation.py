@@ -7,7 +7,7 @@ import numpy as np
 import random
 
 class Simulation:        
-    def __init__(self, TrafficGen, sumo_cmd, start_time, end_time, loading_duration, timestep):
+    def __init__(self, TrafficGen, sumo_cmd, start_time, end_time, loading_duration, timestep, schedule):
         #self.sum_waiting_time = 0
         self.sum_queue_length = 0
         self.waiting_times = {}
@@ -49,7 +49,8 @@ class Simulation:
         lineList = ['CR-Fairmount','CR-Providence','CR-Franklin', \
                 'CR-Middleborough','CR-Worcester','CR-Needham' \
                     'CR-Greenbush','CR-Kingston','Amtrak']
-        df =  pd.read_csv('schedules/' + )
+        df =  pd.read_csv('schedules/' + schedule)
+        print('SCHEDULE IS: ' + schedule)
         departures = df[df['Direction'] == 0].sort_values(by=['Minutes'])
         for line in lineList:
             self.departures_dict[line] = departures[departures['Service'] == 'CR-Worcester'].reset_index()
@@ -220,11 +221,15 @@ class Simulation:
         for loop in self.inductors:
             awaiting_release = traci.lanearea.getLastStepVehicleIDs(loop)
             if awaiting_release and traci.vehicle.getParameter(awaiting_release[0], "greenlit") == "False" :
+                print("Check 1")
                 if traci.vehicle.getParameter(awaiting_release[0], "assigned") == "True" or (traci.vehicle.getParameter(awaiting_release[0], "dispatched") == "True" ):
                     # print(self.activeRoutes)
+                    print("Check 2")
                     if not bool(set(self.conflictDict[traci.vehicle.getRouteID(awaiting_release[0])]) & set (self.activeRoutes)): #doesnt share elem with self.activeRoutes
                         # self.activeRoutes = []
+                        print("Check 3")
                         if traci.vehicle.getRouteID(awaiting_release[0])[0] == 'T':
+                            print("Check 4")
                             state_length = len(traci.trafficlight.getRedYellowGreenState(self.indDict[loop]))
                             traci.trafficlight.setRedYellowGreenState(self.indDict[loop], state_length * 'G')
                             traci.trafficlight.setPhaseDuration(self.indDict[loop], 90)
@@ -240,7 +245,7 @@ class Simulation:
                             self.activeRoutes.append(traci.vehicle.getRouteID(awaiting_release[0]))
                             self.occupied[traci.lanearea.getLaneID(loop)[0:-5] + 'in'] = False 
                             traci.vehicle.setParameter(awaiting_release[0], "greenlit", "True")
-                            # print("greenlighting " + awaiting_release[0])
+                            print("greenlighting " + awaiting_release[0])
                     else:
                         None
                         # self.activeRoutes = []  

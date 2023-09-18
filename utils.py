@@ -18,7 +18,7 @@ def import_test_configuration(config_file):
               'loading_duration': content['simulation'].getint('loading_duration'),
               'timestep': content['simulation'].getint('timestep'),
               'sumocfg_file_name': content['dir']['sumocfg_file_name'],
-              'schedule_file_name': content['dir']['models_path_name']}
+              'schedule_file_name': content['dir']['schedule_file_name']}
     return config
 
 
