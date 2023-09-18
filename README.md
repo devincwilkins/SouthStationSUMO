@@ -1,5 +1,8 @@
 # South Station SUMO Simulation
 
+## Running the tool
+Run the main.py file to launch your simulation. All the logic of the assignment and dispatch itself is contained within simulation.py, including which platforms each line type is allowed to access. The user is encouraged to modify this (self.limitedPlatformDict)
+
 ## Inputting Schedules (/schedules/*)
 Design your own arrivals and departures schedule and input into the schedules folder
 
