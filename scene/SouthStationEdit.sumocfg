@@ -6,5 +6,7 @@
         <gui-settings-file value="SouthStationEdit.settings.xml"/>
         <additional-files value="SouthStationEdit.add.xml"/>
         <time-to-teleport value = "-1"/>
+        <begin value = "19000"/>
+        <end value = "25000"/>
     </input>
 </configuration>

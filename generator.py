@@ -159,14 +159,17 @@ class TrafficGenerator:
 
             vehNr = 0
 
+            #default routes for every train type
             defaultDict = {'CR-Fairmount':'TrackDB2toL1','CR-Providence':'Track1toL1','CR-Franklin':'Track1toL1', \
                 'CR-Middleborough':'TrackOC21toL1','CR-Worcester':'Track5toL1','CR-Needham':'Track5toL1', \
                     'CR-Greenbush':'TrackOC21toL1','CR-Kingston':'TrackOC21toL1','Amtrak':'Track1toL1','Southcoast':'TrackOC21toL1'} 
 
+            #what track should each use to come from YARD?
             defaultYardDict = {'CR-Fairmount':'TrackOC21toL1','CR-Providence':'TrackOC21toL1','CR-Franklin':'TrackOC21toL1', \
                 'CR-Middleborough':'TrackOC21toL1','CR-Worcester':'TrackOC21toL1','CR-Needham':'TrackOC21toL1', \
                     'CR-Greenbush':'TrackOC21toL1','CR-Kingston':'TrackOC21toL1','Amtrak':'TrackOC21toL1','Southcoast':'TrackOC21toL1'} 
             
+            #Use colors to distinguish train types
             colorDict = {'CR-Fairmount':'yellow','CR-Providence':'yellow','CR-Franklin':'yellow', \
                 'CR-Middleborough':'yellow','CR-Worcester':'yellow','CR-Needham':'yellow', \
                     'CR-Greenbush':'yellow','CR-Kingston':'yellow','Amtrak':'blue','Southcoast':'#51FF06'} 
@@ -175,12 +178,17 @@ class TrafficGenerator:
 
             arrivals = df[df['Direction'] == 1]
             departures = df[df['Direction'] == 0]
-            arrivals['low'] = arrivals['Minutes'] + 15
-            arrivals['hi'] = arrivals['Minutes'] + 15
 
+            arrivals['low'] = arrivals['Minutes'] + 10 #set number to be minimum time at platform
+            arrivals['hi'] = arrivals['Minutes'] + 45 #set number to be maximum time at platform
+
+            #Merge each departure to each arriving train where the condition is met that 
+            # the departing train is scheduled to leave between 10-20 minutes after the arrival of the arriving train.
+            ## This may create multiple matches!
             tmp = arrivals.merge(departures, how='left', on=['Service'], suffixes=('', '_OB')) \
             .query('Minutes_OB.between(`low`, `hi`)')
             
+            #Create a new dataframe with a column which quantifies difference between paired arrivals-departures, then sort least to most difference
             paired = (
             tmp.assign(
                 Minutes_diff = tmp['Minutes_OB'] - tmp['Minutes']
@@ -194,6 +202,7 @@ class TrafficGenerator:
             unique_ob_list = []
             count = 0
 
+            #drop duplicate pairings except where minimum value between arrival and departure
             for index, row in paired.iterrows():
                 if row['id'] not in unique_ib_list and row['id_OB'] not in unique_ob_list:
                     count +=1
@@ -202,21 +211,22 @@ class TrafficGenerator:
                 else:
                     paired.drop(index, inplace=True)
 
-            match_dict = dict(zip(paired.id, paired.id_OB))
-            time_dict = dict(zip(paired.id_OB, paired.Minutes_OB))
+            match_dict = dict(zip(paired.id, paired.id_OB)) #defines pairs of vehicles (arrival-departure)
+            time_dict = dict(zip(paired.id_OB, paired.Minutes_OB)) #defines departure vehicles in relation to their time of departure
 
+            #
             with open(schedule_path, newline='') as csvfile:
                 reader = csv.reader(csvfile, delimiter=',', quotechar='|')
                 next(reader)
                 sortedlist = sorted(reader, key=lambda row: int(row[3])*60, reverse=False)
                 for row in sortedlist:
-                    if row[2] == '1':
-                        if row[0] in match_dict.keys():
+                    if row[2] == '1': #if arriving train
+                        if row[0] in match_dict.keys(): #if matched to a departure
                             print('    <vehicle id="%s_%s" type="CR" route="%s" color="%s" depart="%i" departSpeed="4.4"> <param key="assigned" value="False"/> <param key="next" value="%s"/> <param key="dispatched" value="False"/> <param key="dep_time" value="%i"/>  <param key="greenlit" value="False"/> <param key="loading" value="False"/> <param key="doneloading" value="False"/> <param key="name" value="%s_%s"/> <stop lane="L1_in_0" endPos="185" duration="200"/> </vehicle>' % (row[1], row[0], defaultDict[row[1]], colorDict[row[1]], int(row[3])*60, match_dict[row[0]], time_dict[match_dict[row[0]]]*60, row[1], row[0]),  file=routes)
-                        else:
+                        else: #if not matched to a departure, send to YARD
                             print('    <vehicle id="%s_%s" type="CR" route="%s" color="%s" depart="%i" departSpeed="4.4"> <param key="assigned" value="False"/> <param key="next" value="YARD"/> <param key="dispatched" value="False"/> <param key="dep_time" value="0"/>  <param key="greenlit" value="False"/> <param key="loading" value="False"/> <param key="doneloading" value="False"/> <param key="name" value="%s_%s"/> <stop lane="L1_in_0" endPos="185" duration="200"/> </vehicle>' % (row[1], row[0], defaultDict[row[1]], colorDict[row[1]], int(row[3])*60, row[1], row[0]),  file=routes)
-                    else:
-                        if row[0] not in match_dict.values():
+                    else: #if departing train, send to YARD
+                        if row[0] not in match_dict.values(): #if outbound train not matched to arrival
                             print('    <vehicle id="%s_%s" type="CR" route="%s" color="#8FDBFF" depart="%i" departSpeed="4.4"> <param key="assigned" value="False"/><param key="dispatched" value="False"/> <param key="origin" value="YARD"/> <param key="dep_time" value="0"/><param key="greenlit" value="False"/> <param key="loading" value="False"/> <param key="doneloading" value="False"/> <param key="name" value="%s_%s"/> <stop lane="L1_in_0" endPos="185" duration="200"/> </vehicle>' % (row[1], row[0], defaultYardDict[row[1]], int(row[3])*60, row[1], row[0]),  file=routes)
             print("</routes>", file=routes)
 

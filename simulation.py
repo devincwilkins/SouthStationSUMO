@@ -63,7 +63,7 @@ class Simulation:
 
         # generate the route file for this simulation and set up sumo
         self.traffic_gen.generate_routefile(seed=episode)
-        traci.start(self.sumo_cmd)
+        traci.start(self.sumo_cmd) 
 
         print("\t [INFO] Start simulating the episode")
 
@@ -221,15 +221,9 @@ class Simulation:
         for loop in self.inductors:
             awaiting_release = traci.lanearea.getLastStepVehicleIDs(loop)
             if awaiting_release and traci.vehicle.getParameter(awaiting_release[0], "greenlit") == "False" :
-                print("Check 1")
                 if traci.vehicle.getParameter(awaiting_release[0], "assigned") == "True" or (traci.vehicle.getParameter(awaiting_release[0], "dispatched") == "True" ):
-                    # print(self.activeRoutes)
-                    print("Check 2")
                     if not bool(set(self.conflictDict[traci.vehicle.getRouteID(awaiting_release[0])]) & set (self.activeRoutes)): #doesnt share elem with self.activeRoutes
-                        # self.activeRoutes = []
-                        print("Check 3")
                         if traci.vehicle.getRouteID(awaiting_release[0])[0] == 'T':
-                            print("Check 4")
                             state_length = len(traci.trafficlight.getRedYellowGreenState(self.indDict[loop]))
                             traci.trafficlight.setRedYellowGreenState(self.indDict[loop], state_length * 'G')
                             traci.trafficlight.setPhaseDuration(self.indDict[loop], 90)
