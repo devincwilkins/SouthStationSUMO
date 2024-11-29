@@ -1,1 +1,17 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: SouthStationSUMO
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Devin Camille
+    family-names: Wilkins
+    email: devinwilkins98@gmail.com
+    affiliation: NYU
+repository-code: 'https://github.com/devincwilkins/SouthStationSUMO'
+license: MIT
 
